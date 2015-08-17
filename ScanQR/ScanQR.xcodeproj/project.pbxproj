@@ -14,6 +14,7 @@
 		BBDB20AC1B818061004064D8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBDB20AB1B818061004064D8 /* Images.xcassets */; };
 		BBDB20AF1B818061004064D8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBDB20AD1B818061004064D8 /* LaunchScreen.xib */; };
 		BBDB20BB1B818062004064D8 /* ScanQRTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20BA1B818062004064D8 /* ScanQRTests.m */; };
+		BBDB20C51B8183E8004064D8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBDB20C41B8183E8004064D8 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		BBDB20B41B818062004064D8 /* ScanQRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScanQRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBDB20B91B818062004064D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BBDB20BA1B818062004064D8 /* ScanQRTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScanQRTests.m; sourceTree = "<group>"; };
+		BBDB20C41B8183E8004064D8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBDB20C51B8183E8004064D8 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +66,7 @@
 		BBDB20921B818061004064D8 = {
 			isa = PBXGroup;
 			children = (
+				BBDB20C41B8183E8004064D8 /* AVFoundation.framework */,
 				BBDB209D1B818061004064D8 /* ScanQR */,
 				BBDB20B71B818062004064D8 /* ScanQRTests */,
 				BBDB209C1B818061004064D8 /* Products */,
