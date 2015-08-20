@@ -40,6 +40,7 @@
                             </label>
                         </subviews>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="LiJ-Rf-Qxl" secondAttribute="bottom" constant="20" id="L6I-2c-JT0"/>
                             <constraint firstAttribute="centerX" secondItem="IL1-KG-NIa" secondAttribute="centerX" id="NuY-GS-Q5J"/>
@@ -47,6 +48,9 @@
                             <constraint firstAttribute="centerY" secondItem="IL1-KG-NIa" secondAttribute="centerY" id="VTp-lO-sg5"/>
                             <constraint firstItem="LiJ-Rf-Qxl" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="m7d-GE-lD0"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="gzn-30-eef" appends="YES" id="6fZ-bE-1GW"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="frameLabel" destination="IL1-KG-NIa" id="XGB-mk-qCS"/>
@@ -54,6 +58,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="gzn-30-eef">
+                    <connections>
+                        <action selector="tapAction:" destination="vXZ-lx-hvc" id="RcB-eW-Ap6"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
         </scene>
     </scenes>
