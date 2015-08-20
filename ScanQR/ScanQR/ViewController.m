@@ -13,6 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *frameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *myImageView;
 
 @property (retain) AVCaptureDevice *devices;
 @property (retain) AVCaptureSession *session;
@@ -69,8 +70,53 @@
 int x=0;
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    NSLog(@"Just a test category");
+    
+    /*We unlock the  image buffer*/
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    /*Create a CGImageRef from the CVImageBufferRef*/
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+    
+    /*We release some components*/
+    CGContextRelease(newContext);
+    CGColorSpaceRelease(colorSpace);
+    
+    /*We display the result on the custom layer*/
+    /*self.customLayer.contents = (id) newImage;*/
+    
+    /*We display the result on the image view (We need to change the orientation of the image so that the video is displayed correctly)*/
+    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
+    self.myImageView.image = image;
+    
+    NSLog(@"Just a test category");
+    
+    /*We relase the CGImageRef*/
+    CGImageRelease(newImage);
+    
     x++;
     [_messageLabel setText:[NSString stringWithFormat:@"%d", x]];
 }
+
+//- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
+//{
+//    for (AVMetadataMachineReadableCodeObject *metadata in metadataObjects) {
+//        if ([metadata.type isEqualToString: AVMetadataObjectTypeQRCode]) {
+//            self.borderView.hidden = NO;
+//        } else {
+//            <#statements#>
+//        }
+//    }
+//}
+
 
 @end
