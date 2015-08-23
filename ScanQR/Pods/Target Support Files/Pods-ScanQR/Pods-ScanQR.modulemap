@@ -1,0 +1,6 @@
+framework module Pods_ScanQR {
+  umbrella header "Pods-ScanQR-umbrella.h"
+
+  export *
+  module * { export * }
+}
