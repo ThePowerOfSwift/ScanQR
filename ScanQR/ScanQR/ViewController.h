@@ -11,6 +11,6 @@
 
 @interface ViewController : UIViewController <G8TesseractDelegate>
 
-
+- (NSString *)recognize: (UIImage *) image;
 @end
 
