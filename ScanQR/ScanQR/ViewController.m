@@ -21,6 +21,7 @@
 @property (retain) AVCaptureVideoDataOutput *video;
 
 @property (retain) AVCaptureVideoPreviewLayer *previewLayer;
+@property (retain) CALayer *cameraViewLayer;
 
 @property (retain) UIImage *croppedImage;
 
@@ -63,20 +64,29 @@
 //    [_previewLayer setFrame:self.view.bounds];
 //    [_previewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
 //    [self.view.layer insertSublayer:_previewLayer atIndex:0];
+    self.cameraViewLayer = [CALayer layer];
+    [self.cameraViewLayer setBounds:CGRectMake(0, 0, 570, 320)];
+    [self.cameraViewLayer setPosition:CGPointMake(160, 284)];
+    [self.cameraViewLayer setAffineTransform:CGAffineTransformMakeRotation(M_PI/2)];
+    [self.cameraViewLayer setContentsGravity:kCAGravityResizeAspect];
+    [self.view.layer insertSublayer:self.cameraViewLayer atIndex:0];
     
     [_session startRunning];
 }
 
 - (IBAction)tapAction:(UITapGestureRecognizer *)sender {
     NSLog(@"Already Tapped...");
+    [self performSegueWithIdentifier:@"processIdentifier" sender:NULL];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"processIdentifier"]) {
         processViewController *v = (processViewController *)segue.destinationViewController;
+        NSLog(@"here is segue....%@...%@...",v,self.croppedImage);
         if (self.croppedImage) {
             v.croppedImage = self.croppedImage;
+            NSLog(@"set croppedImage...");
         } else
             NSLog(@"self croppedImage is NULL...");
     }
@@ -98,8 +108,14 @@
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
     CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+    // image processing part start
     
-    [self.view.layer setContents:(__bridge id)(newImage)];
+    // do something
+    
+    // image processing part end
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self.cameraViewLayer setContents:(__bridge id)(newImage)];
+    });
     
     /*We release some components*/
     CGContextRelease(newContext);
@@ -121,7 +137,6 @@
     UIGraphicsEndImageContext();
     
     /*We relase the CGImageRef*/
-    CGContextRelease(context);
     CGImageRelease(newImage);
 
     CGImageRelease(croppedImageRef);

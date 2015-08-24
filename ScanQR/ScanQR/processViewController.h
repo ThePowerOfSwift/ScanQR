@@ -11,6 +11,6 @@
 
 @interface processViewController : UIViewController <G8TesseractDelegate>
 
-@property (weak, nonatomic) UIImage *croppedImage;
+@property (strong, nonatomic) UIImage *croppedImage;
 
 @end

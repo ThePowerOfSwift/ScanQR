@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *croppedImageView;
 @property (weak, nonatomic) IBOutlet UITextView *resultTextView;
 
+
 @end
 
 @implementation processViewController
@@ -22,10 +23,14 @@
     // Do any additional setup after loading the view.
     
     // 在这里处理:do processing here... the image is 'croppedImage'
+    NSLog(@"what is croppedImage ,%@ ...",self.croppedImage);
     [self.croppedImageView setImage:self.croppedImage];
+    [self.resultTextView setText:[self recognize: self.croppedImage] ];
     
     
-//    [self.resultTextView setText:resultString];
+}
+- (IBAction)backToView:(UIBarButtonItem *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (NSString *)recognize: (UIImage *) image
@@ -80,10 +85,10 @@
     // NSLog(@"Result: %@", returnString);
     
     // You could retrieve more information about recognized text with that methods:
-    NSArray *characterBoxes = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelSymbol];
-    NSArray *paragraphs = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelParagraph];
-    NSArray *characterChoices = tesseract.characterChoices;
-    UIImage *imageWithBlocks = [tesseract imageWithBlocks:characterBoxes drawText:YES thresholded:NO];
+//    NSArray *characterBoxes = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelSymbol];
+//    NSArray *paragraphs = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelParagraph];
+//    NSArray *characterChoices = tesseract.characterChoices;
+//    UIImage *imageWithBlocks = [tesseract imageWithBlocks:characterBoxes drawText:YES thresholded:NO];
     
     return returnString;
 }
