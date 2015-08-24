@@ -65,8 +65,8 @@
 //    [_previewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
 //    [self.view.layer insertSublayer:_previewLayer atIndex:0];
     self.cameraViewLayer = [CALayer layer];
-    [self.cameraViewLayer setBounds:CGRectMake(0, 0, 570, 320)];
-    [self.cameraViewLayer setPosition:CGPointMake(160, 284)];
+    [self.cameraViewLayer setBounds:CGRectMake(0, 0, self.view.frame.size.height, self.view.frame.size.width)];
+    [self.cameraViewLayer setPosition:CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2)];
     [self.cameraViewLayer setAffineTransform:CGAffineTransformMakeRotation(M_PI/2)];
     [self.cameraViewLayer setContentsGravity:kCAGravityResizeAspect];
     [self.view.layer insertSublayer:self.cameraViewLayer atIndex:0];
