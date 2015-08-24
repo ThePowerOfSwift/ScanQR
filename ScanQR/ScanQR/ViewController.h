@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <TesseractOCR/TesseractOCR.h>
 
-@interface ViewController : UIViewController <G8TesseractDelegate>
+@interface ViewController : UIViewController
 
-- (NSString *)recognize: (UIImage *) image;
+
 @end
 

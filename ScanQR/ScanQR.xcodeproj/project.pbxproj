@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		58B263F41B83F60600F63A23 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 58B263F31B83F60600F63A23 /* tessdata */; };
 		58B263F61B84285200F63A23 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B263F51B84285100F63A23 /* libz.tbd */; };
+		BB0055861B8A926E0006B6EB /* processViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0055851B8A926E0006B6EB /* processViewController.m */; };
 		BBDB20A11B818061004064D8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20A01B818061004064D8 /* main.m */; };
 		BBDB20A41B818061004064D8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20A31B818061004064D8 /* AppDelegate.m */; };
 		BBDB20A71B818061004064D8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20A61B818061004064D8 /* ViewController.m */; };
@@ -36,6 +37,8 @@
 		58B263F51B84285100F63A23 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		6A0427EB463EFD50B416EDC4 /* Pods_ScanQR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ScanQR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A98D8DFFDF6704C169EE104 /* Pods-ScanQR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScanQR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ScanQR/Pods-ScanQR.release.xcconfig"; sourceTree = "<group>"; };
+		BB0055841B8A926E0006B6EB /* processViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processViewController.h; sourceTree = "<group>"; };
+		BB0055851B8A926E0006B6EB /* processViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = processViewController.m; sourceTree = "<group>"; };
 		BBDB209B1B818061004064D8 /* ScanQR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScanQR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBDB209F1B818061004064D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BBDB20A01B818061004064D8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -116,9 +119,11 @@
 		BBDB209D1B818061004064D8 /* ScanQR */ = {
 			isa = PBXGroup;
 			children = (
+				BBDB20A81B818061004064D8 /* Main.storyboard */,
 				BBDB20A51B818061004064D8 /* ViewController.h */,
 				BBDB20A61B818061004064D8 /* ViewController.m */,
-				BBDB20A81B818061004064D8 /* Main.storyboard */,
+				BB0055841B8A926E0006B6EB /* processViewController.h */,
+				BB0055851B8A926E0006B6EB /* processViewController.m */,
 				BBDB20AB1B818061004064D8 /* Images.xcassets */,
 				BBDB209E1B818061004064D8 /* Supporting Files */,
 			);
@@ -307,6 +312,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0055861B8A926E0006B6EB /* processViewController.m in Sources */,
 				BBDB20A71B818061004064D8 /* ViewController.m in Sources */,
 				BBDB20A41B818061004064D8 /* AppDelegate.m in Sources */,
 				BBDB20A11B818061004064D8 /* main.m in Sources */,
