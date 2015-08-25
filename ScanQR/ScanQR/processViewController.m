@@ -24,6 +24,7 @@
     
     // 在这里处理:do processing here... the image is 'croppedImage'
     NSLog(@"what is croppedImage ,%@ ...",self.croppedImage);
+    self.croppedImageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.croppedImageView setImage:self.croppedImage];
     [self.resultTextView setText:[self recognize: self.croppedImage] ];
     
