@@ -10,6 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "processViewController.h"
 
+
 @interface ViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *frameLabel;
@@ -24,6 +25,7 @@
 @property (retain) CALayer *cameraViewLayer;
 
 @property (retain) UIImage *croppedImage;
+@property (retain) OpenCVUtil *opencv;
 
 @end
 
@@ -32,6 +34,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.opencv = [[OpenCVUtil alloc] init];
     
     [self.frameLabel.layer setBorderWidth:1.0f];
     [self.frameLabel.layer setBorderColor:[UIColor redColor].CGColor];
@@ -108,16 +111,20 @@
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
     CGImageRef newImage = CGBitmapContextCreateImage(newContext);
-//    NSLog(@"%ld", (long)[UIImage imageWithCGImage:newImage].imageOrientation);
-//     UIImage *image = [self imageByScalingToSize: CGSizeMake(width, height) sourceImage: [UIImage imageWithCGImage:newImage]];
+    
+//    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
+    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationUp];
     // image processing part start
-    
+    CGImageRef processedImage = [self.opencv myGray:image].CGImage;
     // do something
+//    UIImage *temp_image= [UIImage imageWithCGImage:processedImage scale:1.0 orientation:UIImageOrientationRight];
     
+    image = [UIImage imageWithCGImage:processedImage scale:1.0 orientation:UIImageOrientationRight];
     
     // image processing part end
     dispatch_sync(dispatch_get_main_queue(), ^{
-        [self.cameraViewLayer setContents:(__bridge id)(newImage)];
+        [self.cameraViewLayer setContents:(__bridge id)(processedImage)];
+//        [self.cameraViewLayer setContents:(__bridge id)(newImage)];
     });
     
     /*We release some components*/
@@ -136,39 +143,28 @@
     double widthRatio = labelWidth / viewWidth;
     double heightRatio = labelHeight / viewHeight;
     
-    // NSLog(@"%f, %f", labelWidth, labelHeight);
-    
-    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
-    
     double cropWidth = widthRatio * image.size.width;
     double cropHeight = heightRatio * image.size.height;
     
     CGSize imageSize = CGSizeMake(cropWidth, cropHeight);
     
-//    CGSize imageSize = CGSizeMake(image.size.width, image.size.height);
     CGRect croppedImageSize = CGRectMake((image.size.height-cropHeight)/2, (image.size.width-cropWidth)/2, cropWidth, cropHeight);
     CGImageRef croppedImageRef = CGImageCreateWithImageInRect(image.CGImage, croppedImageSize);
-   
-    
-//    NSLog(@"%@", imageSize);
+
     UIImage *croppedImage = [UIImage imageWithCGImage:croppedImageRef];
     UIGraphicsBeginImageContext(imageSize);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
+    CGFloat size = MIN(croppedImage.size.width, croppedImage.size.height);
+    CGContextTranslateCTM(context, size / 2, size / 2);
     CGContextRotateCTM (context, M_PI/2);
+    CGContextTranslateCTM(context, -size / 2, -size / 2);
     
-    
-//    CGContextDrawImage(context, CGRectMake(0,0,cropWidth,cropHeight), croppedImageRef);
-//    [image drawAtPoint:CGPointMake((image.size.height-cropHeight)/2, (image.size.width-cropWidth)/2)];
-    [image drawAtPoint:CGPointMake(0,0)];
-    //[image drawInRect:CGRectMake((image.size.height-cropHeight)/2, (image.size.width-cropWidth)/2, cropWidth, cropHeight)];
-    
-//    [[UIImage imageWithCGImage:croppedImageRef] drawAtPoint:CGPointMake(0,0)];
+    [[UIImage imageWithCGImage:croppedImageRef] drawAtPoint:CGPointMake(0,0)];
     
     UIImage *img=UIGraphicsGetImageFromCurrentImageContext();
     CGContextRestoreGState(context);
     self.croppedImage = img;
-//    self.croppedImage = [UIImage imageWithCGImage:croppedImageRef];
     UIGraphicsEndImageContext();
     
     /*We relase the CGImageRef*/
@@ -181,68 +177,6 @@
 - (BOOL)shouldCancelImageRecognitionForTesseract:(G8Tesseract *)tesseract {
     return NO;  // return YES, if you need to interrupt tesseract before it finishes
 }
-
-static inline double radians (double degrees) {return degrees * M_PI/180;}
-
--(UIImage*)imageByScalingToSize:(CGSize)targetSize sourceImage: (UIImage *) image
-{
-    UIImage* sourceImage = image;
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    
-    CGImageRef imageRef = [sourceImage CGImage];
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
-    
-    if (bitmapInfo == kCGImageAlphaNone) {
-        bitmapInfo = kCGImageAlphaNoneSkipLast;
-    }
-    
-    CGContextRef bitmap;
-    
-    if (sourceImage.imageOrientation == UIImageOrientationUp || sourceImage.imageOrientation == UIImageOrientationDown) {
-        bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
-        
-    } else {
-        bitmap = CGBitmapContextCreate(NULL, targetHeight, targetWidth, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
-        
-    }
-    
-    if (sourceImage.imageOrientation == UIImageOrientationLeft) {
-        CGContextRotateCTM (bitmap, radians(90));
-        CGContextTranslateCTM (bitmap, 0, -targetHeight);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationRight) {
-        CGContextRotateCTM (bitmap, radians(-90));
-        CGContextTranslateCTM (bitmap, -targetWidth, 0);
-        
-    } else if (sourceImage.imageOrientation == UIImageOrientationUp) {
-        // NOTHING
-    } else if (sourceImage.imageOrientation == UIImageOrientationDown) {
-        CGContextTranslateCTM (bitmap, targetWidth, targetHeight);
-        CGContextRotateCTM (bitmap, radians(-180.));
-    }
-    
-    CGContextDrawImage(bitmap, CGRectMake(0, 0, targetWidth, targetHeight), imageRef);
-    CGImageRef ref = CGBitmapContextCreateImage(bitmap);
-    UIImage* newImage = [UIImage imageWithCGImage:ref];
-    
-    CGContextRelease(bitmap);
-    CGImageRelease(ref);
-    
-    return newImage; 
-}
-
-//- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
-//{
-//    for (AVMetadataMachineReadableCodeObject *metadata in metadataObjects) {
-//        if ([metadata.type isEqualToString: AVMetadataObjectTypeQRCode]) {
-//            self.borderView.hidden = NO;
-//        } else {
-//            <#statements#>
-//        }
-//    }
-//}
 
 
 @end

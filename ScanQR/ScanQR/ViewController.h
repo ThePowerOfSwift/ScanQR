@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "OpenCVUtil.h"
 
 
 @interface ViewController : UIViewController
