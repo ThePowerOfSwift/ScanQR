@@ -13,5 +13,7 @@
 @interface OpenCVUtil : NSObject
 
 -(UIImage *)myGray:(UIImage *)image;
+-(UIImage *)myHomomorphicFilter:(UIImage *)image;
+
 
 @end

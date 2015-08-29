@@ -15,6 +15,7 @@
 		58E0D03A1B8D408E009C7E83 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E0D0391B8D408E009C7E83 /* ImageIO.framework */; };
 		58E0D03C1B8D40A0009C7E83 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E0D03B1B8D40A0009C7E83 /* CoreVideo.framework */; };
 		58E0D03E1B8D416E009C7E83 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E0D03D1B8D416E009C7E83 /* CoreMedia.framework */; };
+		58E5D46F1B8E4C0200F4CEA2 /* light.BMP in Resources */ = {isa = PBXBuildFile; fileRef = 58E5D46D1B8E4C0200F4CEA2 /* light.BMP */; };
 		BB0055861B8A926E0006B6EB /* processViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0055851B8A926E0006B6EB /* processViewController.m */; };
 		BBDB20A11B818061004064D8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20A01B818061004064D8 /* main.m */; };
 		BBDB20A41B818061004064D8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDB20A31B818061004064D8 /* AppDelegate.m */; };
@@ -48,6 +49,7 @@
 		58E0D0391B8D408E009C7E83 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		58E0D03B1B8D40A0009C7E83 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		58E0D03D1B8D416E009C7E83 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		58E5D46D1B8E4C0200F4CEA2 /* light.BMP */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = light.BMP; path = ../../../../Downloads/tongtailvbo/light.BMP; sourceTree = "<group>"; };
 		6A0427EB463EFD50B416EDC4 /* Pods_ScanQR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ScanQR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A98D8DFFDF6704C169EE104 /* Pods-ScanQR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScanQR.release.xcconfig"; path = "Pods/Target Support Files/Pods-ScanQR/Pods-ScanQR.release.xcconfig"; sourceTree = "<group>"; };
 		BB0055841B8A926E0006B6EB /* processViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processViewController.h; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 		BBDB209D1B818061004064D8 /* ScanQR */ = {
 			isa = PBXGroup;
 			children = (
+				58E5D46D1B8E4C0200F4CEA2 /* light.BMP */,
 				58E0D0361B8D16B5009C7E83 /* openCVUtil.h */,
 				58E0D0371B8D16B5009C7E83 /* openCVUtil.mm */,
 				BBDB20A81B818061004064D8 /* Main.storyboard */,
@@ -269,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBDB20AA1B818061004064D8 /* Main.storyboard in Resources */,
+				58E5D46F1B8E4C0200F4CEA2 /* light.BMP in Resources */,
 				58B263F41B83F60600F63A23 /* tessdata in Resources */,
 				BBDB20AF1B818061004064D8 /* LaunchScreen.xib in Resources */,
 				BBDB20AC1B818061004064D8 /* Images.xcassets in Resources */,

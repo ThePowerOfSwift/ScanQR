@@ -75,6 +75,8 @@
     [self.view.layer insertSublayer:self.cameraViewLayer atIndex:0];
     
     [_session startRunning];
+    
+    NSLog(@"start Running");
 }
 
 - (IBAction)tapAction:(UITapGestureRecognizer *)sender {
@@ -95,8 +97,16 @@
     }
 }
 
+int count = 0;
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+//    count++;
+//    if(count != 10){
+//        return;
+//    }else{
+//        count = 0;
+//    }
+    /* *** */
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     CVPixelBufferLockBaseAddress(imageBuffer, 0);
     size_t width = CVPixelBufferGetWidth(imageBuffer);
@@ -109,30 +119,23 @@
     
     /*Create a CGImageRef from the CVImageBufferRef*/
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGImageRef rawImage = CGBitmapContextCreateImage(context);
     
-//    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
-    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationUp];
-    // image processing part start
-    CGImageRef processedImage = [self.opencv myGray:image].CGImage;
-    // do something
-//    UIImage *temp_image= [UIImage imageWithCGImage:processedImage scale:1.0 orientation:UIImageOrientationRight];
-    
-    image = [UIImage imageWithCGImage:processedImage scale:1.0 orientation:UIImageOrientationRight];
-    
-    // image processing part end
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [self.cameraViewLayer setContents:(__bridge id)(processedImage)];
-//        [self.cameraViewLayer setContents:(__bridge id)(newImage)];
-    });
+//    UIImage *image= [UIImage imageWithCGImage:rawImage scale:1.0 orientation:UIImageOrientationRight];
+    UIImage *image= [UIImage imageWithCGImage:rawImage scale:1.0 orientation:UIImageOrientationUp];
     
     /*We release some components*/
-    CGContextRelease(newContext);
+    CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
+    CGImageRelease(rawImage);
+    /* *** */
+//    NSLog(@"get Raw Image");
     
     /*We display the result on the custom layer*/
     /*self.customLayer.contents = (id) newImage;*/
+    
+    
     
     /*We display the result on the image view (We need to change the orientation of the image so that the video is displayed correctly)*/
     double labelWidth = self.frameLabel.frame.size.width;
@@ -143,35 +146,66 @@
     double widthRatio = labelWidth / viewWidth;
     double heightRatio = labelHeight / viewHeight;
     
-    double cropWidth = widthRatio * image.size.width;
-    double cropHeight = heightRatio * image.size.height;
+    double imageWidth = image.size.height;
+    double imageHeight = image.size.width;
+    
+    double cropWidth = widthRatio * imageWidth;
+    double cropHeight = heightRatio * imageHeight;
+//    double cropWidth = widthRatio * image.size.height;
+//    double cropHeight = heightRatio * image.size.width;
+    
     
     CGSize imageSize = CGSizeMake(cropWidth, cropHeight);
     
-    CGRect croppedImageSize = CGRectMake((image.size.height-cropHeight)/2, (image.size.width-cropWidth)/2, cropWidth, cropHeight);
+    CGRect croppedImageSize = CGRectMake((imageHeight-cropHeight)/2, (imageWidth-cropWidth)/2, cropWidth, cropHeight);
     CGImageRef croppedImageRef = CGImageCreateWithImageInRect(image.CGImage, croppedImageSize);
-
     UIImage *croppedImage = [UIImage imageWithCGImage:croppedImageRef];
+    
+    // image processing part start
+//    UIImage *processedImage = [self.opencv myHomomorphicFilter:croppedImage];
+    UIImage* processedImage = [self.opencv myGray:croppedImage];
+//        UIImage *temp_image= [UIImage imageWithCGImage:processedImage scale:1.0 orientation:UIImageOrientationRight];
+    // image processing part end
+    UIGraphicsBeginImageContext(CGSizeMake(imageHeight,imageWidth));
+    CGContextRef viewContext = UIGraphicsGetCurrentContext();
+    [image drawAtPoint: CGPointMake(0,0)];
+//    [processedImage drawAtPoint:CGPointMake((imageHeight-cropWidth)/2,(imageWidth-cropHeight)/2)];
+    [processedImage drawInRect:CGRectMake((imageHeight-cropWidth)/2,(imageWidth-cropHeight)/2, cropWidth,cropHeight)];
+    image=UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    CGContextRelease(viewContext);
+    image = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationRight];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self.cameraViewLayer setContents:(__bridge id)(image.CGImage)];
+        //        [self.cameraViewLayer setContents:(__bridge id)(newImage)];
+    });
+    
+//    NSLog(@"get Processed Image");
+    
+    croppedImage = processedImage;
     UIGraphicsBeginImageContext(imageSize);
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     CGFloat size = MIN(croppedImage.size.width, croppedImage.size.height);
     CGContextTranslateCTM(context, size / 2, size / 2);
     CGContextRotateCTM (context, M_PI/2);
     CGContextTranslateCTM(context, -size / 2, -size / 2);
-    
-    [[UIImage imageWithCGImage:croppedImageRef] drawAtPoint:CGPointMake(0,0)];
-    
+    [croppedImage drawAtPoint:CGPointMake(0,0)];
     UIImage *img=UIGraphicsGetImageFromCurrentImageContext();
     CGContextRestoreGState(context);
     self.croppedImage = img;
     UIGraphicsEndImageContext();
+    CGContextRelease(context);
+    
+//    NSLog(@"get Cropped Image");
+    
     
     /*We relase the CGImageRef*/
-    CGImageRelease(newImage);
-
     CGImageRelease(croppedImageRef);
+//    CGImageRelease(processedImage);
 
+    
+//    NSLog(@"end Image");
 }
 
 - (BOOL)shouldCancelImageRecognitionForTesseract:(G8Tesseract *)tesseract {

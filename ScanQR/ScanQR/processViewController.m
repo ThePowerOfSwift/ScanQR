@@ -77,8 +77,84 @@
     // Optional: Limit recognition time with a few seconds
     //tesseract.maximumRecognitionTime = 2.0;
     
+    tesseract.pageSegmentationMode = G8PageSegmentationModeAutoOSD;
+    
     // Start the recognition
     [tesseract recognize];
+    
+//    G8PageIteratorLevelBlock,
+//    G8PageIteratorLevelParagraph,
+//    G8PageIteratorLevelTextline,
+//    G8PageIteratorLevelWord,
+//    G8PageIteratorLevelSymbol
+    CGSize imageSize = image.size;
+    UIGraphicsBeginImageContext(imageSize);
+    CGContextRef viewContext = UIGraphicsGetCurrentContext();
+    [image drawAtPoint: CGPointMake(0,0)];
+    
+    NSArray *  recognizedBlocks1 = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelBlock];
+    
+    [[UIColor blueColor] setStroke];
+    
+    for (G8RecognizedBlock* recognizedBlock in recognizedBlocks1) {
+        CGRect blockRect = [recognizedBlock boundingBoxAtImageOfSize: imageSize];
+        NSLog(@"G8PageIteratorLevelBlock:");
+        NSLog(@"BoundingBox: %@",NSStringFromCGRect(blockRect));
+        NSLog(@"Confidence: %f",recognizedBlock.confidence);
+        
+        CGContextStrokeRect(viewContext, blockRect);
+    }
+    
+ 
+    
+    NSArray *  recognizedBlocks2 = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelParagraph];
+    
+    [[UIColor greenColor] setStroke];
+    
+    for (G8RecognizedBlock* recognizedBlock in recognizedBlocks2) {
+        CGRect blockRect = [recognizedBlock boundingBoxAtImageOfSize: imageSize];
+        NSLog(@"G8PageIteratorLevelParagraph:");
+        NSLog(@"BoundingBox: %@",NSStringFromCGRect(blockRect));
+        NSLog(@"Confidence: %f",recognizedBlock.confidence);
+        
+        CGContextStrokeRect(viewContext, blockRect);
+    }
+    
+    
+    
+    NSArray *  recognizedBlocks3 = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelTextline];
+    
+    [[UIColor redColor] setStroke];
+    
+    for (G8RecognizedBlock* recognizedBlock in recognizedBlocks3) {
+        CGRect blockRect = [recognizedBlock boundingBoxAtImageOfSize: imageSize];
+        NSLog(@"G8PageIteratorLevelTextline:");
+        NSLog(@"BoundingBox: %@",NSStringFromCGRect([recognizedBlock boundingBoxAtImageOfSize: imageSize]));
+        NSLog(@"Confidence: %f",recognizedBlock.confidence);
+        
+        CGContextStrokeRect(viewContext, blockRect);
+    }
+//
+//    NSArray *  recognizedBlocks4 = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelWord];
+//    
+//    for (G8RecognizedBlock* recognizedBlock in recognizedBlocks4) {
+//        NSLog(@"G8PageIteratorLevelWord:");
+//        NSLog(@"BoundingBox: %@",NSStringFromCGRect([recognizedBlock boundingBoxAtImageOfSize: imageSize]));
+//        NSLog(@"Confidence: %f",recognizedBlock.confidence);
+//    }
+//    
+//    NSArray *  recognizedBlocks5 = [tesseract recognizedBlocksByIteratorLevel:G8PageIteratorLevelSymbol];
+//    
+//    for (G8RecognizedBlock* recognizedBlock in recognizedBlocks5) {
+//        NSLog(@"G8PageIteratorLevelSymbol:");
+//        NSLog(@"BoundingBox: %@",NSStringFromCGRect([recognizedBlock boundingBoxAtImageOfSize: imageSize]));
+//        NSLog(@"Confidence: %f",recognizedBlock.confidence);
+//    }
+    
+    image=UIGraphicsGetImageFromCurrentImageContext();
+    [self.croppedImageView setImage:image];
+    UIGraphicsEndImageContext();
+    CGContextRelease(viewContext);
     
     NSString *returnString = [tesseract recognizedText];
     
